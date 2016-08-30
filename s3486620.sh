@@ -52,6 +52,7 @@ function bruteAttack
 			if [[ $(awk "BEGIN {printf $(date +%s) - $timer_start}") -gt "$timer_end" ]]
 			then
 				echo -e "\tTime-Up" > /dev/stderr
+				echo -e "\tStopped at $plain"
 				return
 			fi
 
@@ -87,7 +88,7 @@ function comparePassword
 }
 
 ####################################################################
-####						Main							####
+####				Main				####
 ####################################################################
 
 if [[ -z $1 ]]
