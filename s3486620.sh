@@ -2,7 +2,7 @@
 
 # Author: 	Brandon Stenhouse (s3486620)
 # Date:		30/08/2016
-# Version:	1.1.5
+# Version:	1.2.0
 
 ####################################################################
 ####					Functions								####
@@ -31,9 +31,9 @@ function fileAttack
 
 function bruteAttack
 {
-	# Timer to stop after 4 minutes on 1 password
+	# Timer to stop after 5 minutes
 	timer_start=$(date +%s)
-	timer_end=240
+	timer_end=300
 	cmd=""
 
 	for i in $(seq 1 5)
@@ -49,7 +49,8 @@ function bruteAttack
 			comparePassword "$plain"
 
 			# Check if times up
-			if [[ $(awk "BEGIN {printf $(date +%s) - $timer_start}") -gt "$timer_end" ]]
+			dif=$(awk "BEGIN {printf $(date +%s) - $timer_start}")
+			if [[ "$dif" -gt "$timer_end" ]]
 			then
 				echo -e "\tTime-Up" > /dev/stderr
 				echo -e "\tStopped at $plain"
@@ -67,8 +68,6 @@ function comparePassword
 
 	if [[ ! -n $1 ]]
 	then
-		# echo -e "\tIncorrect Usage of ComparePassword!" > /dev/stderr
-		# echo -e "\tComparePassword <Plain Password>" > /dev/stderr
 		return
 	fi
 
@@ -115,35 +114,22 @@ echo "Attempting to Crack Passwords."
 
 start=$(date +%s)
 
-echo "$start"
-
 echo
 echo -e "\tAttempting Common"
-# Common
-# Local
-# fileAttack "./common.txt"
-# Titan
 fileAttack "~s3486620/common.txt"
+
 echo
 echo -e "\tAttempting Dictionary"
-# Dict
-# Local
-# fileAttack "/usr/share/dict/words"
-# Titan
 fileAttack "~e20925/linux.words"
 
 echo
-echo -e "\tAttempting Brute Force Limit 4 minutes"
-# Brute
+echo -e "\tAttempting Brute Force Limit 5 minutes"
 bruteAttack
 
-echo "Finished!"
-
 end=$(date +%s)
-
 total=$(awk "BEGIN {printf $end - $start}")
 
-echo "$end"
+echo "Finished!"
 
 if [[ $total -lt 180 ]]
 then
