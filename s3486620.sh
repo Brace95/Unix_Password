@@ -1,4 +1,4 @@
-# !/bin/bash
+#!/bin/bash
 
 # Author: 	Brandon Stenhouse (s3486620)
 # Date:		30/08/2016
