@@ -67,9 +67,9 @@ function comparePassword
 
 	if [[ ! -n $1 ]]
 	then
-		echo -e "\tIncorrect Usage of ComparePassword!" > /dev/stderr
-		echo -e "\tComparePassword <Plain Password>" > /dev/stderr
-		exit
+		# echo -e "\tIncorrect Usage of ComparePassword!" > /dev/stderr
+		# echo -e "\tComparePassword <Plain Password>" > /dev/stderr
+		return
 	fi
 
 	guess=$(echo -n "$1" | sha256sum | awk '{print $1}')
