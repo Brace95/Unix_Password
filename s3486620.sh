@@ -25,7 +25,7 @@ function fileAttack
 		
 		comparePassword "$plain"
 
-	done < "$(eval pwd $1)"
+	done < "$(eval readlink -f $1)"
 
 } 
 
@@ -143,7 +143,7 @@ end=$(date +%s)
 
 total=$(awk "BEGIN {printf $end - $start}")
 
-echo end
+echo $end
 
 if [[ $total -lt 180 ]]
 then
