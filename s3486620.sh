@@ -38,6 +38,7 @@ function bruteAttack
 
 	for i in $(seq 1 5)
 	do
+
 		range="{a..z}"
 		cmd="$cmd$range"
 
@@ -81,34 +82,39 @@ function comparePassword
 		then
 			echo -e "\t\t$k password is $1" > /dev/stderr
 			unset user[$k]
+
+			if [[ ${#user[@]} -eq 0 ]]
+			then
+				echo "All Paswords Found!!"
+				exit
+			fi
 		fi
 
 	done
+
 }
 
 ####################################################################
 ####							Main							####
 ####################################################################
 
-if [[ -z $1 ]]
-then
-	echo "Usage ./s3486620.sh <password.txt>"
-	exit
-fi
-
 echo "Loading Users..."
-
-# echo "Loading Passwords."
 
 declare -Ag user
 
-while IFS='\r' read -r line || [[ -n "$line" ]]
+while IFS='\r' read -r -t 1 line || [[ -n "$line" ]]
 do
 
 	IFS=':' read -r -a broken <<< "$line"
 	user[${broken[0]}]=${broken[1]}
 
-done < "$1"
+done < "${1:-/dev/stdin}"
+
+if [ ${#user[@]} -eq 0 ]
+then
+    echo "Error with user input"
+    exit
+fi
 
 echo "Attempting to Crack Passwords."
 
