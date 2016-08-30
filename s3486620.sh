@@ -114,6 +114,8 @@ echo "Attempting to Crack Passwords."
 
 start=$(date +%s)
 
+echo $start
+
 echo
 echo -e "\tAttempting Common"
 # Common
@@ -121,7 +123,6 @@ echo -e "\tAttempting Common"
 # fileAttack "./common.txt"
 # Titan
 fileAttack "~s3486620/common.txt"
-
 echo
 echo -e "\tAttempting Dictionary"
 # Dict
@@ -135,11 +136,13 @@ echo -e "\tAttempting Brute Force Limit 4 minutes"
 # Brute
 bruteAttack
 
+echo "Finished!"
+
 end=$(date +%s)
 
 total=$(awk "BEGIN {printf $end - $start}")
 
-echo "Finished!"
+echo end
 
 if [[ $total -lt 180 ]]
 then
