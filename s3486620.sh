@@ -4,8 +4,13 @@
 # Date:		30/08/2016
 # Version:	1.1.1
 
+AWK='/usr/bin/awk'
+SEQ='/usr/bin/seq'
+DATE='/bin/date'
+READLINK='/bin/readlink'
+
 ####################################################################
-####				Functions			####
+####			         	Functions                			####
 ####################################################################
 
 function fileAttack
@@ -21,22 +26,22 @@ function fileAttack
 	while IFS='\r' read -r line || [[ -n "$line" ]]
 	do
 
-		plain=$(echo "$line" | awk '{print tolower($0)}')
+		plain=$(echo "$line" | $AWK "{print tolower($0)}")
 		
 		comparePassword "$plain"
 
-	done < "$(eval readlink -f $1)"
+	done < "$(eval $READLINK -f "$1")"
 
 } 
 
 function bruteAttack
 {
 	# Timer to stop after 4 minutes on 1 password
-	timer_start=$(date +%s)
+	timer_start=$($DATE +%s)
 	timer_end=240
 	cmd=""
 
-	for i in $(seq 1 5)
+	for i in $($SEQ 1 5)
 	do
 		range="{a..z}"
 		cmd="$cmd$range"
@@ -49,7 +54,8 @@ function bruteAttack
 			comparePassword "$plain"
 
 			# Check if times up
-			if [[ $(awk "BEGIN {printf $(date +%s) - $timer_start}") -gt "$timer_end" ]]
+			dif=$($AWK "BEGIN {printf $($DATE +%s) - $timer_start}")
+			if [[ "$dif" -gt "$timer_end" ]]
 			then
 				echo -e "\tTime-Up" > /dev/stderr
 				echo -e "\tStopped at $plain"
@@ -72,7 +78,7 @@ function comparePassword
 		exit
 	fi
 
-	guess=$(echo -n "$1" | sha256sum | awk '{print $1}')
+	guess=$(echo -n "$1" | sha256sum | $AWK "{print $1}")
 
 	# Compare the password to the passwords in file
 	for k in "${!user[@]}"
@@ -88,7 +94,7 @@ function comparePassword
 }
 
 ####################################################################
-####				Main				####
+####        				Main			                	####
 ####################################################################
 
 if [[ -z $1 ]]
@@ -113,9 +119,9 @@ done < "$1"
 
 echo "Attempting to Crack Passwords."
 
-start=$(date +%s)
+start=$($DATE +%s)
 
-echo $start
+echo "$start"
 
 echo
 echo -e "\tAttempting Common"
@@ -139,17 +145,17 @@ bruteAttack
 
 echo "Finished!"
 
-end=$(date +%s)
+end=$($DATE +%s)
 
-total=$(awk "BEGIN {printf $end - $start}")
+total=$($AWK "BEGIN {printf $end - $start}")
 
-echo $end
+echo "$end"
 
 if [[ $total -lt 180 ]]
 then
 	echo "It took $total sec(s)"
 else
 
-	echo "It took $(awk "BEGIN {printf $total / 60}") min(s)"
+	echo "It took $($AWK "BEGIN {printf $total / 60}") min(s)"
 
 fi
