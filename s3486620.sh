@@ -4,9 +4,9 @@
 # Date:		30/08/2016
 # Version:	1.1.1
 
-################################################################
-####						Functions						####
-################################################################
+####################################################################
+####				Functions			####
+####################################################################
 
 function fileAttack
 {
@@ -118,17 +118,17 @@ echo
 echo -e "\tAttempting Common"
 # Common
 # Local
-fileAttack "./common.txt"
+# fileAttack "./common.txt"
 # Titan
-# fileAttack "~s3486620/common.txt"
+fileAttack "~s3486620/common.txt"
 
 echo
 echo -e "\tAttempting Dictionary"
 # Dict
 # Local
-fileAttack "/usr/share/dict/words"
+# fileAttack "/usr/share/dict/words"
 # Titan
-# fileAttack "~e20925/linux.words"
+fileAttack "~e20925/linux.words"
 
 echo
 echo -e "\tAttempting Brute Force Limit 4 minutes"
