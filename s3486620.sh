@@ -25,7 +25,7 @@ function fileAttack
 		
 		comparePassword "$plain"
 
-	done < "$1"
+	done < "$(eval pwd $1)"
 
 } 
 
