@@ -18,7 +18,7 @@ function fileAttack
 		exit
 	fi
 
-	while read -r line || [[ -n "$line" ]]
+	while IFS='\r' read -r line || [[ -n "$line" ]]
 	do
 
 		plain=$(echo "$line" | awk '{print tolower($0)}')
@@ -32,8 +32,8 @@ function fileAttack
 function bruteAttack
 {
 	# Timer to stop after 4 minutes on 1 password
-	start=$(date +%s)
-	end=240
+	timer_start=$(date +%s)
+	timer_end=240
 	cmd=""
 
 	for i in $(seq 1 5)
@@ -41,7 +41,7 @@ function bruteAttack
 		range="{a..z}"
 		cmd="$cmd$range"
 
-		echo "$i:${cmd}" > /dev/stderr
+		echo -e "\tLength: $i" > /dev/stderr
 
 		for plain in $(eval echo -n $cmd)
 		do
@@ -49,7 +49,7 @@ function bruteAttack
 			comparePassword "$plain"
 
 			# Check if times up
-			if [[ $(awk "BEGIN {printf $(date +%s) - $start}") -gt "$end" ]]
+			if [[ $(awk "BEGIN {printf $(date +%s) - $timer_start}") -gt "$timer_end" ]]
 			then
 				echo -e "\tTime-Up" > /dev/stderr
 				return
@@ -137,7 +137,7 @@ bruteAttack
 
 end=$(date +%s)
 
-total=$(awk "BEGIN {printf $end - $start }")
+total=$(awk "BEGIN {printf $end - $start}")
 
 echo "Finished!"
 
