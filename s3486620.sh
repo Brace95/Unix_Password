@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Author: 	Brandon Stenhouse (s3486620)
-# Date:		30/08/2016
-# Version:	1.2.0
+# Date:		2/9/2016
+# Version:	1.2.2
 
 ####################################################################
 ####					Functions								####
@@ -11,16 +11,17 @@
 function fileAttack
 {
 
+	# Check if something has been passed
 	if [[ ! -n $1 ]]
 	then
-		echo -e "\tIncorrect Usage of fileAttack!" > /dev/stderr
-		echo -e "\tfileAttack <file>" > /dev/stderr
-		exit
+		return
 	fi
 
+	# Read file to be hashed and compared
 	while IFS='\r' read -r line || [[ -n "$line" ]]
 	do
 
+		# Set the entry to lower case
 		plain=$(echo "$line" | awk '{print tolower($0)}')
 		
 		comparePassword "$plain"
@@ -31,15 +32,18 @@ function fileAttack
 
 function bruteAttack
 {
+
 	# Timer to stop after 5 minutes
 	timer_start=$(date +%s)
 	timer_end=300
+	
+	# Range of characters for brute force
+	range="{a..z}"
 	cmd=""
 
 	for i in $(seq 1 5)
 	do
 
-		range="{a..z}"
 		cmd="$cmd$range"
 
 		echo -e "\tLength: $i" > /dev/stderr
@@ -67,11 +71,13 @@ function bruteAttack
 function comparePassword
 {
 
+	# Check if something was passed
 	if [[ ! -n $1 ]]
 	then
 		return
 	fi
 
+	# Hash with sha256sum
 	guess=$(echo -n "$1" | sha256sum | awk '{print $1}')
 
 	# Compare the password to the passwords in file
@@ -118,6 +124,7 @@ fi
 
 echo "Attempting to Crack Passwords."
 
+# Timer for total time taken
 start=$(date +%s)
 
 echo
@@ -132,6 +139,7 @@ echo
 echo -e "\tAttempting Brute Force Limit 5 minutes"
 bruteAttack
 
+# Calculate total time taken
 end=$(date +%s)
 total=$(awk "BEGIN {printf $end - $start}")
 
