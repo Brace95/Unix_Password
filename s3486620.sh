@@ -89,9 +89,10 @@ function comparePassword
 			echo -e "\t\t$k password is $1" > /dev/stderr
 			unset user[$k]
 
+			# Check if all users are found
 			if [[ ${#user[@]} -eq 0 ]]
 			then
-				echo "All Paswords Found!!"
+				echo "All Passwords Found!!"
 				exit
 			fi
 		fi
@@ -108,6 +109,7 @@ echo "Loading Users..."
 
 declare -Ag user
 
+# Read user file into associative array with user as key.
 while IFS='\r' read -r -t 1 line || [[ -n "$line" ]]
 do
 
@@ -116,6 +118,7 @@ do
 
 done < "${1:-/dev/stdin}"
 
+# End if no users were entered
 if [ ${#user[@]} -eq 0 ]
 then
     echo "Error with user input"
@@ -123,9 +126,6 @@ then
 fi
 
 echo "Attempting to Crack Passwords."
-
-# Timer for total time taken
-start=$(date +%s)
 
 echo
 echo -e "\tAttempting Common"
@@ -139,17 +139,4 @@ echo
 echo -e "\tAttempting Brute Force Limit 5 minutes"
 bruteAttack
 
-# Calculate total time taken
-end=$(date +%s)
-total=$(awk "BEGIN {printf $end - $start}")
-
 echo "Finished!"
-
-if [[ $total -lt 180 ]]
-then
-	echo "It took $total sec(s)"
-else
-
-	echo "It took $(awk "BEGIN {printf $total / 60}") min(s)"
-
-fi
